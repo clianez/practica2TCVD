@@ -1,0 +1,226 @@
+---
+title: "Práctica 2: limpieza, análisis y representación de los datos"
+author: "Cristina Liánez López y Manuel Padrón Martínez"
+date: '`r format(Sys.Date(),"%e de %B, %Y")`'
+output:
+  html_document:
+    toc: yes
+  pdf_document:
+    toc: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r load_libraries, include=FALSE}
+library(stringr)
+
+
+```
+
+# 1. Detalles de la actividad
+
+### 1.1. Descripción
+
+En esta actividad se elabora un caso práctico, consistente en el tratamiento de un conjunto de datos (en inglés, dataset), orientado a aprender a identificar los datos relevantes para un proyecto analítico y usar las herramientas de integración, limpieza, validación y análisis de las mismas.
+
+### 1.2. Objetivos
+
+Los objetivos que se persiguen mediante el desarrollo de esta actividad práctica son los siguientes:
+
+* Aprender a aplicar los conocimientos adquiridos y su capacidad de resolución de problemas en entornos nuevos o poco conocidos dentro de contextos más amplios o multidisciplinares.
+
+* Saber identificar los datos relevantes y los tratamientos necesarios (integración, limpieza y validación) para llevar a cabo un proyecto analítico.
+
+* Aprender a analizar los datos adecuadamente para abordar la información contenida en los datos.
+
+* Identificar la mejor representación de los resultados para aportar conclusiones sobre el problema planteado en el proceso analítico.
+
+* Actuar con los principios éticos y legales relacionados con la manipulación de datos en función del ámbito de aplicación.
+
+* Desarrollar las habilidades de aprendizaje que permita continuar estudiando de un modo que tendrá que ser en gran medida autodirigido o autónomo.
+
+* Desarrollar la capacidad de búsqueda, gestión y uso de información y recursos en el ámbito de la ciencia de datos.
+
+### 1.3. Competencias
+
+Así, las competencias del Máster en _Data Science_ que se desarrollan son:
+
+* Capacidad de analizar un problema en el nivel de abstracción adecuado a cada situación y aplicar las habilidades y conocimientos adquiridos para abordarlo y resolverlo.
+
+* Capacidad para aplicar las técnicas específicas de tratamiento de datos (integración, transformación, limpieza y validación) para su posterior análisis.
+
+# 2. Resolución 
+
+### 2.1. Descripción del dataset 
+
+El conjunto de datos objeto de análisis se ha obtenido a partir de un dataset libre disponible en Kaggle. 
+
+Este conjunto de datos incluye información sobre diferentes marcas de vehículos nuevos y usados a la venta en los EE.UU. Los datos se obtuvieron haciendo uso de la técnica de _Web Scraping._ Está constituido por 2499 vehículos (filas o registros), de los que se han analizado 13 características (columnas) de cada uno.
+
+Las características analizadas en este dataset son:
+
+* **x**: valor para identificar las filas. Comienza en 0.
+
+* **price**:	precio de venta del vehículo en $.
+
+* **brand**:	marca del vehículo.
+
+* **model**:  modelo del vehículo.
+
+* **year**:	año de la primera matriculación del vehículo.
+
+* **Title_Status**:	Esta característica incluye dos posibles valores: _clean title_ que significa que el vehículo es apto para circular; o _salvage insurance_ en caso de que no sea apto para circular debido a que está dañado por un accidente, inundación, incendio, o cualquier otra circunstancia.
+
+* **Mileage**: kilometraje del vehículo, expresado en millas.
+
+* **Color**:	Color del vehículo.
+
+* **Vin**:  Número de bastidor. Compuesto por 17 carácteres (números y letras)
+
+* **Lot**:	es un número de identificación asignado a una cantidad determinada o un lote de coches de un solo fabricante. En este caso, se combina un número de lote con un número de serie para formar el número de identificación del vehículo.
+
+* **State**:	estado o ciudad donde se encuentra el vehículo.
+
+* **Country**: país donde se encuentra el vehículo.
+
+* **Condition**:	tiempo que hace que se publicó el anuncio de venta del vehículo en la página web.
+
+### 2.2. Integración y selección de los datos de interés a analizar.
+
+
+### 2.3. Limpieza de los datos 
+
+En primer lugar, procedemos a realizar la lectura del fichero en formato CSV en el que se encuentran los datos. A continuación, examinaremos el tipo de datos con los que R ha interpretado cada variable.
+
+```{r chunck1}
+# Carga del archivo
+setwd("C:/Users/clian/Desktop/Data Science/Tipologia y ciclo de vida datos/Pract2/Lianez_Padron")
+cars <-read.csv("USA_cars_datasets.csv",header=TRUE)
+
+#muestra las primeras filas del dataset
+head(cars)
+
+#Examino el tipo de datos de cada variable
+str(cars)
+
+```
+
+Puede observarse que los tipos de datos asignados automáticamente por R a las variables se corresponden con el dominio de estas.
+
+De las 13 características registradas de cada vehículo, se ha decido prescindir de **x**, **lot** y **condition**, ya que no son atributos propios de los vehículos, sino que hacen referencia a los anuncios en los que se publicitaban a los mismos.
+
+```{r chunck2}
+# Prescindimos de las variables X, lot y condition
+cars <- cars[,-(1)]
+cars <- cars[,-(9)]
+cars <- cars[,-(11)]
+str(cars)
+head(cars)
+
+```
+
+A continuación, mostraremos los valores de las variables cualitativas o categóricas mediante el uso de tablas de frecuencia. Ésto nos permitirá saber si hay valores fuera del rando o valores extraños en ellas. 
+
+```{r chunck3}
+#variables cualitativas
+table(cars$brand)
+table(cars$model)
+table(cars$title_status)
+table(cars$color)
+table(cars$state)
+table(cars$country)
+```
+
+#### 2.3.1. Valores perdidos 
+
+¿Los datos contienen ceros o elementos vacíos? ¿Cómo gestionarías cada uno de estos casos?
+
+```{r chunck4}
+# valores perdidos(0 o vacíos)
+#Con la siguiente instrucción vemos si hay registros que están incompletos
+complete.cases(cars)
+
+#Analizamos valores perdidos en variables cuantitativas
+sum(is.na(cars$price))
+sum(cars$price == 0)
+
+sum(is.na(cars$year))
+sum(cars$year == 0)
+
+sum(is.na(cars$mileage))
+sum(cars$mileage == 0)
+```
+
+En primer lugar, hemos comprobado si hay registros incompletos, es decir, en los que en alguno de sus atributos no se haya introducido valor. Con la instrucciones ejecutada, se comprueba que no hay ninguno, ya que no se ha obtenido ningún valor a **FALSE**.
+
+En segundo lugar, se ha analizado en cada una de las variables cuantitativas si existen valores almacenados equivalentes a 0 o NA. En el caso del precio, se han detectado 43 registros cuyo precio es 0; y para el caso del kilometraje, se han encontrado 6 registros con este mismo valor.
+
+En el caso de la variable _price_, son claramente valores perdidos ya que no tiene sentido que el precio de vente fijado sea de 0$ cuando la naturaleza de los anuncios es la venta de los vehículos. Será necesario imputar los valores de estas variables en estos registros.
+
+En el caso de la variable _mileage_ cuyo valor es 0, se ha mirado el valor del atributo _year_, puesto que si éste valor se corresponde con coches del 2020, el valor registrado en el atributo _mileage_ puede ser correcto ya que se trataría de vehículos nuevos que no han recorrido ninguna milla aún. 
+
+
+```{r chunck5}
+
+years <- subset(cars$year, subset = cars$mileage == 0)
+print(years)
+
+```
+
+Trás realizar la comprobación, vemos que no es así en ninguno de los casos, es decir, son vehículos con cierta antigüedad, por lo que el valor a 0 de _mileage_ se corresponde con un valor perdido, que deberíamos de imputar.
+
+#### 2.3.2. Identificación y tratamiento de valores extremos.
+
+```{r chunck6}
+boxplot(cars$price)
+
+boxplot(cars$year)
+
+boxplot(cars$mileage)
+```
+
+
+### 2.4. Análisis de los datos 
+
+#### 2.4.1. Selección de los grupos de datos que se quieren analizar/comparar (planificación de los análisis a aplicar).
+
+#### 2.4.2. Comprobación de la normalidad y homogeneidad de la varianza.
+
+#### 2.4.3. Aplicación de pruebas estadísticas para comparar los grupos de datos.
+
+En función de los datos y el objetivo del estudio, aplicar pruebas de contraste de hipótesis, correlaciones, regresiones, etc. Aplicar al menos tres métodos de análisis diferentes.
+
+### 2.5. Representación de los resultados a partir de tablas y gráficas.
+
+### 2.6. Conclusiones
+
+
+
+# 3. Recursos
+
+1. Calvo M., Subirats L., Pérez D. (2019). Introducción a la limpieza y análisis de los datos. Editorial UOC.
+
+2. Dalgaard, P. (2008). Introductory statistics with R. Springer Science & Business Media.
+
+3. Megan Squire (2015). Clean Data. Packt Publishing Ltd.
+
+4. Jiawei Han, Micheine Kamber, Jian Pei (2012). Data mining: concepts and techniques. Morgan Kaufmann.
+
+5. Jason W. Osborne (2010). Data Cleaning Basics: Best Practices in Dealing with Extreme Scores. Newborn and Infant Nursing Reviews; 10 (1): pp. 1527-3369.
+
+6. Wes McKinney (2012). Python for Data Analysis. O’Reilley Media, Inc.
+
+
+
+
+7. Vegas, E. (2017). Preprocesamiento de datos. Material UOC.
+
+8. Gibergans, J. (2017). Regresión lineal múltiple. Material UOC.
+
+9. Rovira, C. (2008). Contraste de hipótesis. Material UOC.
+
+Test for homogeneity of variances - Lavene’s test and the Fligner Killeen test (2016)[en línea]. bioSt@TS. [Consulta: 26 de diciembre de 2017] https://biostats.w.uib.no/test-for-homogeneity-of-variances-levenes-test/
+
+
