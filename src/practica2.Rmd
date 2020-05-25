@@ -62,10 +62,13 @@ Las características analizadas en este dataset son:
 ### 2.2. Integración y selección de los datos de interés a analizar.
 
 
+Preguntas a responder con el estudio:
 
+* ¿Qué influye más en el precio de un vehículo con menos de 20 años de antigüedad: su antigüedad o el kilometraje que tenga?
 
+* ¿Los coches de segunda mano de color blanco son más caros que los de color negro?
 
-
+* ¿Podría crearse un modelo o fórmula para calcular el precio de venta de los vehículos de segunda mano, de manera objetiva, en función de ciertas características de los vehículos? ¿Cuáles serían las características más relevantes a tener en cuenta en esa fórmula?
 
 
 ### 2.3. Limpieza de los datos 
@@ -217,19 +220,183 @@ En los tres diagramas anteriores se observan bastantes valores outliers. Ésto e
 
 #### 2.4.1. Selección de los grupos de datos que se quieren analizar/comparar (planificación de los análisis a aplicar).
 
+A continuación, se seleccionan los grupos dentro de nuestro conjunto de datos que pueden resultar interesantes para analizar y/o comparar.
+
+```{r chunck9}
+#Agrupar por año de primera matriculación, diferenciando los que tienen una antigüedad de 20 años o más.
+
+year <- subset(cars$year, subset = cars$year >= 2000)
+price <- subset(cars$price, subset = cars$year >= 2000)
+mileage <- subset(cars$mileage, subset = cars$year >= 2000)
+cochesMenos20 <- data.frame(price, year, mileage)
+#head(cochesMenos20)
+
+year <- subset(cars$year, subset = cars$year < 2000)
+price <- subset(cars$price, subset = cars$year < 2000)
+mileage <- subset(cars$mileage, subset = cars$year < 2000)
+cochesMas20 <- data.frame(price, year, mileage)
+#head(cochesMas20)
+
+
+#Agrupar coches por color blanco o negro.
+
+precioCochesBlancos <- subset(cars$price, subset = cars$color == "white")
+precioCochesNegros <- subset(cars$price, subset = cars$color == "black")
+
+```
+
 #### 2.4.2. Comprobación de la normalidad y homogeneidad de la varianza.
+
+
+
+
 
 #### 2.4.3. Aplicación de pruebas estadísticas para comparar los grupos de datos.
 
-En función de los datos y el objetivo del estudio, aplicar pruebas de contraste de hipótesis, correlaciones, regresiones, etc. Aplicar al menos tres métodos de análisis diferentes.
+**a). Estudiar visualmente y analiticamente las posibles correlaciones entre:**
+
+* las variables precio y el año de la primera matriculación.
+
+* las variables precio y el kilometraje.
+
+En los dos casos anteriores, solo se van a tener en cuenta los vehículos con una antigüedad inferior a 20 años, es decir, cuya fecha de primera matriculación sea igual o posterior al 2000.
+
+```{r chunck13}
+#price y year
+
+plot(cochesMenos20$price, cochesMenos20$year, xlab = "Precio $", ylab = "Año primera matriculación")
+abline(lm(cochesMenos20$year~cochesMenos20$price),col="red",lwd=4)
+cor(x=cochesMenos20$price, y=cochesMenos20$year)
+
+#price y mileage
+plot(cochesMenos20$price, cochesMenos20$mileage, xlab = "Precio $", ylab = "Kilometraje en millas")
+abline(lm(cochesMenos20$mileage~cochesMenos20$price),col="red",lwd=4)
+cor(x=cochesMenos20$price, y=cochesMenos20$mileage)
+
+```
+
+Del análisis anterior se extrae que existe una correlación positiva entre las variables precio y año de primera matriculación. Es decir, cuanto mayor es el año de primera matriculación, más nuevo es el coche, mayor es el precio.
+
+En cuanto a la relación entre las variables precio y kilometraje, ésta es negativa ya que un mayor kilometraje del vehículo, influye bajando el precio de venta del mismo.
+
+Mediante la función cor(), que utiliza el coeficiente de correlación de Pearson, se observa que en ambos casos, la relación entre los pares de variables puede considerarse de fortaleza media, siendo mayor para la relación entre el precio y el año de primera matriculación. 
+
+**b). Contraste de hipótesis **
+
+Si hay un color que manda actualmente en el mercado de ocasión, ese es el blanco y no otros pigmentos que, tradicionalmente, han levantado más pasiones, como el negro y el rojo. Su espectacular repunte se puede atribuir a que el blanco es una pintura más económica pero, actualmente, la demanda supera ligeramente a la oferta, de modo que, ¿influirá el color del coche en el precio de venta en vehículos de segunda mano?
+
+La siguiente prueba consistirá en un contraste de hipótesis sobre dos muestras para determinar si el precio del coche es superior si éste es color blanco a si lo es negro. Para ello, tendremos dos muestras: la primera de ellas se corresponderá con los precios de los coches de color blanco y, la segunda, con aquellos
+que presentan el color negro.
+
+Por aplicación del Teorema del límite central, para muestras con tamaño superior a 30, se puede suponer que los datos son normales. Como en este caso, n > 30, el contraste de hipótesis siguiente es válido.
+
+Se plantea el siguiente **contraste de hipótesis de dos muestras sobre la diferencia de medias**:
+
+   $H_{0}:\mu_{1} = \mu_{2}$
+ 
+  $H_{1}:\mu_{1} \gt \mu_{2}$
+
+donde $\mu_{1}$ es la media de la población de la que se extrae la primera muestra donde el color de los coches es blanco y $\mu_{2}$ es la media de la población de la que extrae la segunda donde el color de los coches es el negro.
+
+Se trata de un test unilateral. Consideramos el nivel de significación $\alpha = 0.05$
+
+```{r chunck14}
+#Contraste de hipótesis color blanco Vs negro
+
+t.test(precioCochesBlancos, precioCochesNegros, alternative = "less")
+```
+
+Dado que obtenemos un p-valor mayor que el nivel de significación $pValor \gt \alpha$, entonces no rechazamos la hipótesis nula. Por tanto, podemos concluir que el precio de un coche de color blanco no tiene por qué ser mayor al precio de un coche de color negro. 
+
+**c).  Modelo de regresión **
+
+A continuación, se va a crear un modelo o fórmula para predecir el precio de venta de los vehículos de segunda mano en función de ciertas características de los mismos. Así, se calcularán varios modelos de regresión lineal utilizando regresores cuantitativos, en el primero de ellos, y se añadirán regresores cualitativos a los anteriores, en los posteriores modelos, con los que poder realizar las predicciones de los precios.
+
+En primer lugar, se estimará por mínimos cuadrados ordinarios un modelo lineal que explique la variable precio del vehículo en función del año de primera matriculación y el kilometraje. 
+
+En los siguientes modelos de regresión lineal múltiple, se utilizarán regresores cuantitativos, los mismos que se han utilizado en el primer modelo, y se añadirán regresores cualitativos.
+
+De entre los modelos que obtengamos, escogeremos el mejor utilizando como criterio aquel que presente un mayor coeficiente de determinación $R^{2}$.
+
+```{r chunck15}
+#predecir precio en función del año de matriculación y kilometraje
+modelo1 <- lm(formula = cars$price ~ cars$year + cars$mileage)
+
+#predecir precio en función del año de matriculación, kilometraje y marca
+modelo2 <- lm(formula = cars$price ~ cars$year + cars$mileage + cars$brand)
+
+#predecir precio en función del año de matriculación, kilometraje, marca y color
+modelo3 <- lm(formula = cars$price ~ cars$year + cars$mileage + cars$brand + cars$color)
+
+#Tabla con los coeficientes de determinación
+coeficientes <- matrix(c( 1, summary(modelo1)$r.squared,
+                         2, summary(modelo2)$r.squared,
+                         3, summary(modelo3)$r.squared),
+                         ncol = 2, byrow = TRUE)
+print(coeficientes)
+
+
+```
+
+Podemos decir, que el tercer modelo es el más conveniente dado que tiene un mayor coeficiente de determinación. Empleando este modelo y haciendo uso de la **función predict()**, podemos realizar predicciones de precios de vehículos a partir del año de matriculación, kilometraje, marca y color. 
 
 ### 2.5. Representación de los resultados a partir de tablas y gráficas.
 
+
+
+
+
+Para la diagnosis del modelo de regresión lineal múltiple escogido se harán dos gráficos: uno con los valores ajustados frente a los residuos (que nos permitirá ver si la varianza es constante) y el gráfico cuantil-cuantil que compara los residuos del modelo con los valores de una variable que se distribuye normalmente(QQ plot). 
+
+```{r chunck19}
+#Varianza de los errores/residuos constante
+plot(fitted.values(modelo3),rstandard(modelo3), xlab="Valores ajustados", ylab="Residuos estandarizados")  
+abline(h=0) 
+
+#Distribución normal de los residuos
+qqnorm(modelo3$residuals)
+qqline(modelo3$residuals)
+
+```
+
+El **gráfico de los residuos en función de los valores ajustados por el modelo** permite evaluar 3 cuestiones principalmente:
+
+* Si has utilizado el tipo de relación adecuada, es decir, si el modelo debería ser no lineal en lugar de lineal. Si el tipo de modelo que utilizaste no es el adecuado encontrarás sesgos o tendencias en los residuos.
+
+* Si la varianza es constante o por el contrario tienes problemas de dispersión irregular. Los residuos deben distribuirse al azar alrededor del valor cero.
+
+* Si existen datos extremos (outliers) que puedan perturbar e invalidar tu modelo. 
+
+El **gráfico cuantil-cuantil (Normal Q-Q)** permite comparar la distribución de los residuos con la distribución normal teórica. Por lo tanto, si los residuos tienen una distribución normal deberían seguir aproximadamente la línea recta diagonal en el gráfico Q-Q normal, en caso contrario los residuos se van a apartar de la diagonal.
+
+De las gráficas anteriores se puede extraer la presencia de outliers que están perturbando el módelo y valores alejados del comportamiento de la mayoría de los puntos (sobre todo en valores pequeños y altos de x).
+
+
 ### 2.6. Conclusiones
+
+Finalmente, a partir de todo el estudio realizado, anotamos las siguientes conclusiones dando respuesta
+a las preguntas inialmente planteadas.
+
+* ¿Qué influye más en el precio de un vehículo con menos de 20 años de antigüedad: su antigüedad o el kilometraje que tenga? 
+
+Pues parece ser, que la antigüedad del vehículo tiene una repercusión mayor en el precio que el kilometraje de éste.
+
+* ¿Los coches de color blanco son más caros que los de color negro?
+
+En este estudio, y con un 95% de nivel de confianza, el precio de los coches de color blanco es similar al precio de los coches de color negro. 
+
+* ¿Podría crearse un modelo o fórmula para calcular el precio de venta de los vehículos de segunda mano, de manera objetiva, en función de ciertas características de los vehículos? ¿Cuáles serían las características más relevantes a tener en cuenta en esa fórmula?
+
+Sí, podemos realizar predicciones de precios de vehículos a partir del año de matriculación, kilometraje, marca y color. 
 
 ### 2.7. Crear el archivo procesado. 
 
 
+```{r chunck20}
+
+write.csv2(cars, file = "USA_cars_datasets_processed.csv")
+
+```
 
 # 3. Recursos
 
@@ -245,15 +412,19 @@ En función de los datos y el objetivo del estudio, aplicar pruebas de contraste
 
 6. Wes McKinney (2012). Python for Data Analysis. O’Reilley Media, Inc.
 
-
-
-
 7. Vegas, E. (2017). Preprocesamiento de datos. Material UOC.
 
 8. Gibergans, J. (2017). Regresión lineal múltiple. Material UOC.
 
 9. Rovira, C. (2008). Contraste de hipótesis. Material UOC.
 
-Test for homogeneity of variances - Lavene’s test and the Fligner Killeen test (2016)[en línea]. bioSt@TS. [Consulta: 26 de diciembre de 2017] https://biostats.w.uib.no/test-for-homogeneity-of-variances-levenes-test/
+
+# 4. Tabla de contribuciones al trabajo
+
+                      CONTRIBUCIONES        |        FIRMA
+                  --------------------------|----------------------
+                    Investigación previa    |      CLL, MPM
+                    Redacción de respuestas |      CLL, MPM
+                    Desarrollo código       |      CLL, MPM
 
 
