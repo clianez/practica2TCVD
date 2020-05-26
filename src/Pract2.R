@@ -3,7 +3,7 @@ library(lubridate)
 library(VIM)
 
 # Carga del archivo
-setwd("C:/Users/clian/Desktop/Data Science/Tipologia y ciclo de vida datos/Pract2/Lianez_Padron")
+setwd("../csv")
 cars <-read.csv("USA_cars_datasets.csv",header=TRUE)
 head(cars)
 
@@ -55,9 +55,9 @@ cars$color <- str_replace(cars$color, "guard", "black")
 table(cars$color)
 
 
-# valores perdidos(0 o vacíos)
+# valores perdidos(0 o vac?os)
 
-#Con la siguiente instrucción vemos si hay registros que están incompletos
+#Con la siguiente instrucci?n vemos si hay registros que est?n incompletos
 complete.cases(cars)
 
 #Analizamos valores perdidos 
@@ -69,7 +69,7 @@ print(years)
 
 
 
-#imputación del precio cuyo valor es 0
+#imputaci?n del precio cuyo valor es 0
 
 cars$price <- ifelse(cars$price == 0, NA, cars$price)
 cars$mileage <- ifelse(cars$mileage == 0, NA, cars$mileage)
@@ -95,7 +95,7 @@ boxplot(cars$mileage)
 
 #Agrupaciones de datos
 
-#Agrupar por año de primera matriculación, diferenciando los que tienen una antigüedad de 20 años o más.
+#Agrupar por a?o de primera matriculaci?n, diferenciando los que tienen una antig?edad de 20 a?os o m?s.
 
 year <- subset(cars$year, subset = cars$year >= 2000)
 price <- subset(cars$price, subset = cars$year >= 2000)
@@ -115,13 +115,13 @@ precioCochesBlancos <- subset(cars$price, subset = cars$color == "white")
 precioCochesNegros <- subset(cars$price, subset = cars$color == "black")
 
 
-#Comparar por marcas de vehículos.
+#Comparar por marcas de veh?culos.
 
 # correlaciones 
 
 #price y year
 
-plot(cochesMenos20$price, cochesMenos20$year, xlab = "Precio $", ylab = "Año primera matriculación")
+plot(cochesMenos20$price, cochesMenos20$year, xlab = "Precio $", ylab = "A?o primera matriculaci?n")
 abline(lm(cochesMenos20$year~cochesMenos20$price),col="red",lwd=4)
 cor(x=cochesMenos20$price, y=cochesMenos20$year)
 
@@ -130,37 +130,37 @@ plot(cochesMenos20$price, cochesMenos20$mileage, xlab = "Precio $", ylab = "Kilo
 abline(lm(cochesMenos20$mileage~cochesMenos20$price),col="red",lwd=4)
 cor(x=cochesMenos20$price, y=cochesMenos20$mileage)
 
-#Contraste de hipótesis color blanco Vs negro
+#Contraste de hip?tesis color blanco Vs negro
 t.test(precioCochesBlancos, precioCochesNegros, alternative = "less")
 
-#Modelo de regresión lineal
+#Modelo de regresi?n lineal
 
-#predecir precio en función del año de matriculación y kilometraje
+#predecir precio en funci?n del a?o de matriculaci?n y kilometraje
 modelo1 <- lm(formula = cars$price ~ cars$year + cars$mileage)
 summary(modelo1)
 
-#predecir precio en función del año de matriculación, kilometraje y marca
+#predecir precio en funci?n del a?o de matriculaci?n, kilometraje y marca
 modelo2 <- lm(formula = cars$price ~ cars$year + cars$mileage + cars$brand)
 summary(modelo2)
 
-#predecir precio en función del año de matriculación, kilometraje, marca y color
+#predecir precio en funci?n del a?o de matriculaci?n, kilometraje, marca y color
 modelo3 <- lm(formula = cars$price ~ cars$year + cars$mileage + cars$brand + cars$color)
 summary(modelo3)
 
-#Tabla con los coeficientes de determinación
+#Tabla con los coeficientes de determinaci?n
 coeficientes <- matrix(c( 1, summary(modelo1)$r.squared,
                          2, summary(modelo2)$r.squared,
                          3, summary(modelo3)$r.squared),
                          ncol = 2, byrow = TRUE)
 print(coeficientes)
 
-#gráficos
+#gr?ficos
 
 #Varianza de los errores/residuos constante
 plot(fitted.values(modelo3),rstandard(modelo3), xlab="Valores ajustados", ylab="Residuos estandarizados")  
 abline(h=0) 
 
-#Distribución normal de los residuos
+#Distribuci?n normal de los residuos
 qqnorm(modelo3$residuals)
 qqline(modelo3$residuals)
 

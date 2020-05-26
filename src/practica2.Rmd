@@ -3,9 +3,9 @@ title: "Práctica 2: limpieza, análisis y representación de los datos"
 author: "Cristina Liánez López y Manuel Padrón Martínez"
 date: '`r format(Sys.Date(),"%e de %B, %Y")`'
 output:
-  html_document:
-    toc: yes
   pdf_document:
+    toc: yes
+  html_document:
     toc: yes
 ---
 
@@ -49,7 +49,7 @@ Las características analizadas en este dataset son:
 
 * **Color**:	Color del vehículo.
 
-* **Vin**:  Número de bastidor. Compuesto por 17 carácteres (números y letras)
+* **Vin**:  Número de bastidor. Compuesto por 17 caracteres (números y letras)
 
 * **Lot**:	es un número de identificación asignado a una cantidad determinada o un lote de coches de un solo fabricante. En este caso, se combina un número de lote con un número de serie para formar el número de identificación del vehículo.
 
@@ -77,8 +77,8 @@ En primer lugar, procedemos a realizar la lectura del fichero en formato CSV en 
 
 ```{r chunck1}
 # Carga del archivo
-setwd("C:/Users/clian/Desktop/Data Science/Tipologia y ciclo de vida datos/Pract2/Lianez_Padron")
-cars <-read.csv("USA_cars_datasets.csv",header=TRUE)
+setwd("../csv")
+cars <- read.csv("USA_cars_datasets.csv",header=TRUE)
 
 #muestra las primeras filas del dataset
 head(cars)
@@ -176,7 +176,7 @@ print(years)
 
 ```
 
-Trás realizar la comprobación, vemos que no es así en ninguno de los casos, es decir, son vehículos con cierta antigüedad, por lo que el valor a 0 de _mileage_ se corresponde con un valor perdido, que deberíamos de imputar.
+Tras realizar la comprobación, vemos que no es así en ninguno de los casos, es decir, son vehículos con cierta antigüedad, por lo que el valor a 0 de _mileage_ se corresponde con un valor perdido, que deberíamos de imputar.
 
 Para la imputación de los valores perdidos se empleará un método basado en la similitud o diferencia entre los registros: la imputación basada en k vecinos más próximos (en inglés, kNN-imputation). La elección de esta alternativa se realiza bajo la hipótesis de que nuestros registros guardan cierta relación. No obstante, es mejor trabajar con datos “aproximados” que con los propios elementos vacíos, ya que obtendremos análisis con menor margen de error.
 
@@ -253,7 +253,7 @@ precioCochesNegros <- subset(cars$price, subset = cars$color == "black")
 
 #### 2.4.3. Aplicación de pruebas estadísticas para comparar los grupos de datos.
 
-**a). Estudiar visualmente y analiticamente las posibles correlaciones entre:**
+**a). Estudiar visualmente y analíticamente las posibles correlaciones entre:**
 
 * las variables precio y el año de la primera matriculación.
 
@@ -294,7 +294,7 @@ Se plantea el siguiente **contraste de hipótesis de dos muestras sobre la difer
 
    $H_{0}:\mu_{1} = \mu_{2}$
  
-  $H_{1}:\mu_{1} \gt \mu_{2}$
+   $H_{1}:\mu_{1} > \mu_{2}$
 
 donde $\mu_{1}$ es la media de la población de la que se extrae la primera muestra donde el color de los coches es blanco y $\mu_{2}$ es la media de la población de la que extrae la segunda donde el color de los coches es el negro.
 
@@ -306,7 +306,7 @@ Se trata de un test unilateral. Consideramos el nivel de significación $\alpha 
 t.test(precioCochesBlancos, precioCochesNegros, alternative = "less")
 ```
 
-Dado que obtenemos un p-valor mayor que el nivel de significación $pValor \gt \alpha$, entonces no rechazamos la hipótesis nula. Por tanto, podemos concluir que el precio de un coche de color blanco no tiene por qué ser mayor al precio de un coche de color negro. 
+Dado que obtenemos un p-valor mayor que el nivel de significación $pValor > \alpha$, entonces no rechazamos la hipótesis nula. Por tanto, podemos concluir que el precio de un coche de color blanco no tiene por qué ser mayor al precio de un coche de color negro. 
 
 **c).  Modelo de regresión **
 
@@ -369,13 +369,13 @@ El **gráfico de los residuos en función de los valores ajustados por el modelo
 
 El **gráfico cuantil-cuantil (Normal Q-Q)** permite comparar la distribución de los residuos con la distribución normal teórica. Por lo tanto, si los residuos tienen una distribución normal deberían seguir aproximadamente la línea recta diagonal en el gráfico Q-Q normal, en caso contrario los residuos se van a apartar de la diagonal.
 
-De las gráficas anteriores se puede extraer la presencia de outliers que están perturbando el módelo y valores alejados del comportamiento de la mayoría de los puntos (sobre todo en valores pequeños y altos de x).
+De las gráficas anteriores se puede extraer la presencia de outliers que están perturbando el modelo y valores alejados del comportamiento de la mayoría de los puntos (sobre todo en valores pequeños y altos de x).
 
 
 ### 2.6. Conclusiones
 
 Finalmente, a partir de todo el estudio realizado, anotamos las siguientes conclusiones dando respuesta
-a las preguntas inialmente planteadas.
+a las preguntas inicialmente planteadas.
 
 * ¿Qué influye más en el precio de un vehículo con menos de 20 años de antigüedad: su antigüedad o el kilometraje que tenga? 
 
