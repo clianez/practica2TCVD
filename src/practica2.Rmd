@@ -285,7 +285,7 @@ df <- data.frame(price=c(precioCochesBlancos,precioCochesNegros), color=c(rep(1,
 fligner.test(price ~ color, data = df)
 ```
 
-Nos da un valor de 0,05 por lo que se acepta la hipótesis nula de homocedasticidad. Con lo que podremos usar un test t mas adelante entre estas dos variables.
+Nos da un valor mayor que 0,05 por lo que se acepta la hipótesis nula de homocedasticidad. Con lo que podremos usar un test t mas adelante entre estas dos variables.
 
 
 #### 2.4.3. Aplicación de pruebas estadísticas para comparar los grupos de datos.
