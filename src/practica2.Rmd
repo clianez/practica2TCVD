@@ -265,9 +265,18 @@ shapiro.test(as.array(cars$price))
 ks.test(as.array(unique(cars$mileage)), pnorm, mean(as.array(unique(cars$mileage))), sd(as.array(unique(cars$mileage))))
 shapiro.test(as.array(cars$mileage))
 
+#Comprobamos la normalidad de la variable precioCochesBlancos
+ks.test(as.array(unique(precioCochesBlancos)), pnorm, mean(as.array(unique(precioCochesBlancos))), sd(as.array(unique(precioCochesBlancos))))
+shapiro.test(as.array(precioCochesBlancos))
+
+#Comprobamos la normalidad de la variable precioCochesNegros
+ks.test(as.array(unique(precioCochesNegros)), pnorm, mean(as.array(unique(precioCochesNegros))), sd(as.array(unique(precioCochesNegros))))
+shapiro.test(as.array(precioCochesNegros))
+
+
 ```
 
-Como vemos, a excepción de la variable año, las otras 2 variables claramente no cumplen con la normalidad. En el caso de la variable año, debido al teorema central del límite, podemos considerar que añadiendo más observacioens tenderá a comportarse como una distribución normal.
+Como vemos, a excepción de la variable año, las otras 4 variables claramente no cumplen con la normalidad. En el caso de la variable año, debido al teorema central del límite, podemos considerar que añadiendo más observacioens tenderá a comportarse como una distribución normal.
 
 
 #### 2.4.3. Aplicación de pruebas estadísticas para comparar los grupos de datos.
