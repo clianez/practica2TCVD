@@ -86,6 +86,8 @@ head(cars)
 #Examino el tipo de datos de cada variable
 str(cars)
 
+#Miramos un resumen de los datos
+summary(cars)
 ```
 
 Puede observarse que los tipos de datos asignados automáticamente por R a las variables se corresponden con el dominio de estas.
@@ -247,8 +249,25 @@ precioCochesNegros <- subset(cars$price, subset = cars$color == "black")
 
 #### 2.4.2. Comprobación de la normalidad y homogeneidad de la varianza.
 
+Vamos a comprobar la suposición de normalidad y la homogeneidad de la varianza de las variables. Para ello, vamos a usar el test de Kolmogorov-Smirnov y luego lo contrastaremos con el test de Shapiro-Wilk. Con esta prueba si obtenemos un p-value mayor a 0,05 asumiremos que los datos siguen una distribución normal.
 
+```{r chunck10}
 
+#Comprobamos la normalidad de la variable año
+ks.test(as.array(unique(cars$year)), pnorm, mean(as.array(unique(cars$year))), sd(as.array(unique(cars$year))))
+shapiro.test(as.array(cars$year))
+
+#Comprobamos la normalidad de la variable precio
+ks.test(as.array(unique(cars$price)), pnorm, mean(as.array(unique(cars$price))), sd(as.array(unique(cars$price))))
+shapiro.test(as.array(cars$price))
+
+#Comprobamos la normalidad de la variable kilometraje
+ks.test(as.array(unique(cars$mileage)), pnorm, mean(as.array(unique(cars$mileage))), sd(as.array(unique(cars$mileage))))
+shapiro.test(as.array(cars$mileage))
+
+```
+
+Como vemos, a excepción de la variable año, las otras 2 variables claramente no cumplen con la normalidad. En el caso de la variable año, debido al teorema central del límite, podemos considerar que añadiendo más observacioens tenderá a comportarse como una distribución normal.
 
 
 #### 2.4.3. Aplicación de pruebas estadísticas para comparar los grupos de datos.
