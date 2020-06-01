@@ -278,6 +278,14 @@ shapiro.test(as.array(precioCochesNegros))
 
 Como vemos, a excepción de la variable año, las otras 4 variables claramente no cumplen con la normalidad. En el caso de la variable año, debido al teorema central del límite, podemos considerar que añadiendo más observacioens tenderá a comportarse como una distribución normal.
 
+Tambien vamos a hacer un análisis de homocedasticidad entre las variables precioCochesBlancos y precioCoches negros que son las que vamos a comprobar más adelante. Como nos han fallado los test de normalidad vamos a usar el test de Fligner-Killeen.
+
+```{r chunck11}
+fligner.test(price ~ color, data = cars)
+```
+
+Una vez más  nos da un valor por debajo de 0,05 por lo que se rechaza la hipótesis nula de homocedasticidad. Por lo que la variable price presenta varianzas diferentes para los diferentes grupos de colores.
+
 
 #### 2.4.3. Aplicación de pruebas estadísticas para comparar los grupos de datos.
 
