@@ -16,7 +16,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r load_libraries, include=FALSE}
 library(stringr)
 library(VIM)
-
+library(ggplot2)
 
 ```
 
@@ -417,10 +417,21 @@ a las preguntas inicialmente planteadas.
 * ¿Qué influye más en el precio de un vehículo con menos de 20 años de antigüedad: su antigüedad o el kilometraje que tenga? 
 
 Pues parece ser, que la antigüedad del vehículo tiene una repercusión mayor en el precio que el kilometraje de éste.
+En la gráfica a continuación, vemos como, incluso visualmente se puede apreciar que mientras más a la derecha estamos en la gráfica más caro es el coche.
+
+```{r chunck21}
+ ggplot(cars,aes(x=year,y=mileage, colour=price))+geom_point()+labs(x="Año", y="Kilometraje", colour="precio")
+```
 
 * ¿Los coches de color blanco son más caros que los de color negro?
 
 En este estudio, y con un 95% de nivel de confianza, el precio de los coches de color blanco es similar al precio de los coches de color negro. 
+
+En la gráfica podemos ver como los coches blancos, etiquetados como 1, y los coches negros, etiquetados como 2, están distribuidos en  los mismos rangos de precios, tal como corrobora el estudio.
+
+```{r chunck22}
+ggplot(df,aes(x=price,y=1:nrow(df),colour=as.factor(color)))+geom_point()+labs(x="Precio",y="Nº Muestra", colour="Color")
+```
 
 * ¿Podría crearse un modelo o fórmula para calcular el precio de venta de los vehículos de segunda mano, de manera objetiva, en función de ciertas características de los vehículos? ¿Cuáles serían las características más relevantes a tener en cuenta en esa fórmula?
 
