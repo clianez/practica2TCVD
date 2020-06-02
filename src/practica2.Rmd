@@ -303,12 +303,12 @@ En los dos casos anteriores, solo se van a tener en cuenta los vehículos con un
 
 plot(cochesMenos20$price, cochesMenos20$year, xlab = "Precio $", ylab = "Año primera matriculación")
 abline(lm(cochesMenos20$year~cochesMenos20$price),col="red",lwd=4)
-cor(x=cochesMenos20$price, y=cochesMenos20$year)
+cor(x=cochesMenos20$price, y=cochesMenos20$year,method="spearman")
 
 #price y mileage
 plot(cochesMenos20$price, cochesMenos20$mileage, xlab = "Precio $", ylab = "Kilometraje en millas")
 abline(lm(cochesMenos20$mileage~cochesMenos20$price),col="red",lwd=4)
-cor(x=cochesMenos20$price, y=cochesMenos20$mileage)
+cor(x=cochesMenos20$price, y=cochesMenos20$mileage,method="spearman")
 
 ```
 
@@ -316,7 +316,7 @@ Del análisis anterior se extrae que existe una correlación positiva entre las 
 
 En cuanto a la relación entre las variables precio y kilometraje, ésta es negativa ya que un mayor kilometraje del vehículo, influye bajando el precio de venta del mismo.
 
-Mediante la función cor(), que utiliza el coeficiente de correlación de Pearson, se observa que en ambos casos, la relación entre los pares de variables puede considerarse de fortaleza media, siendo mayor para la relación entre el precio y el año de primera matriculación. 
+Mediante la función cor(), que utiliza el coeficiente de correlación de Spearman, se observa que en ambos casos, la relación entre los pares de variables puede considerarse de fortaleza media, siendo mayor para la relación entre el precio y el año de primera matriculación. 
 
 **b). Contraste de hipótesis **
 
