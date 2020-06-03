@@ -13,11 +13,9 @@ El código está escrito en R.
 
 # Ficheros del código fuente.
 
-* **csv/USA_cars_datasets**: fichero csv con los datos originales.
-* **csv/USA_cars_datasets_processed**: fichero csv con los datos finales analizados.
-* **src/Practica2.Rmd**: 
-* **src/Pract2.R**: 
-* **pdf**:
+* **csv**: carpeta con los fichero csv de los datos. Hay dos ficheros: **USA_cars_dataset** ,con los datos originales, y  **USA_cars_datasets_processed**, con los datos finales analizados.
+* **src**: carpeta con el código generado para analizar los datos. Se encuentran dos archivos:   
+* **pdf**: documento pdf con las respuestas a las preguntas planteadas.
 
 # Recursos.
 
