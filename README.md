@@ -13,8 +13,8 @@ El código está escrito en R.
 
 # Ficheros del código fuente.
 
-* **csv**: carpeta con los fichero csv de los datos. Hay dos ficheros: **USA_cars_dataset** ,con los datos originales, y  **USA_cars_datasets_processed**, con los datos finales analizados.
-* **src**: carpeta con el código generado para analizar los datos. Se encuentran dos archivos:   
+* **csv**: carpeta con los fichero csv de los datos. Hay dos ficheros: **USA_cars_dataset** , con los datos originales, y  **USA_cars_datasets_processed**, con los datos finales analizados.
+* **src**: carpeta con el código generado para analizar los datos. Se encuentran dos archivos: **Pract2.R**, con el código R utilizado en la práctica, y  **practica2.Rmd**, fichero fuente .Rmd que generar informes dinámicos en R, usando el paquete RMarkdown.   
 * **pdf**: documento pdf con las respuestas a las preguntas planteadas.
 
 # Recursos.
