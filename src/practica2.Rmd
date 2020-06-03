@@ -225,7 +225,8 @@ En los tres diagramas anteriores se observan bastantes valores outliers. Ésto e
 A continuación, se seleccionan los grupos dentro de nuestro conjunto de datos que pueden resultar interesantes para analizar y/o comparar.
 
 ```{r chunck9}
-#Agrupar por año de primera matriculación, diferenciando los que tienen una antigüedad de 20 años o más.
+#Agrupar por año de primera matriculación, diferenciando los que tienen 
+#una antigüedad de 20 años o más.
 
 year <- subset(cars$year, subset = cars$year >= 2000)
 price <- subset(cars$price, subset = cars$year >= 2000)
@@ -254,34 +255,42 @@ Vamos a comprobar la suposición de normalidad y la homogeneidad de la varianza 
 ```{r chunck10}
 
 #Comprobamos la normalidad de la variable año
-ks.test(as.array(unique(cars$year)), pnorm, mean(as.array(unique(cars$year))), sd(as.array(unique(cars$year))))
+ks.test(as.array(unique(cars$year)), pnorm, mean(as.array(unique(cars$year))), 
+        sd(as.array(unique(cars$year))))
 shapiro.test(as.array(cars$year))
 
 #Comprobamos la normalidad de la variable precio
-ks.test(as.array(unique(cars$price)), pnorm, mean(as.array(unique(cars$price))), sd(as.array(unique(cars$price))))
+ks.test(as.array(unique(cars$price)), pnorm, mean(as.array(unique(cars$price))), 
+        sd(as.array(unique(cars$price))))
 shapiro.test(as.array(cars$price))
 
 #Comprobamos la normalidad de la variable kilometraje
-ks.test(as.array(unique(cars$mileage)), pnorm, mean(as.array(unique(cars$mileage))), sd(as.array(unique(cars$mileage))))
+ks.test(as.array(unique(cars$mileage)), pnorm, mean(as.array(unique(cars$mileage))), 
+        sd(as.array(unique(cars$mileage))))
 shapiro.test(as.array(cars$mileage))
 
 #Comprobamos la normalidad de la variable precioCochesBlancos
-ks.test(as.array(unique(precioCochesBlancos)), pnorm, mean(as.array(unique(precioCochesBlancos))), sd(as.array(unique(precioCochesBlancos))))
+ks.test(as.array(unique(precioCochesBlancos)), pnorm, 
+        mean(as.array(unique(precioCochesBlancos))), 
+        sd(as.array(unique(precioCochesBlancos))))
 shapiro.test(as.array(precioCochesBlancos))
 
 #Comprobamos la normalidad de la variable precioCochesNegros
-ks.test(as.array(unique(precioCochesNegros)), pnorm, mean(as.array(unique(precioCochesNegros))), sd(as.array(unique(precioCochesNegros))))
+ks.test(as.array(unique(precioCochesNegros)), pnorm, 
+        mean(as.array(unique(precioCochesNegros))), 
+        sd(as.array(unique(precioCochesNegros))))
 shapiro.test(as.array(precioCochesNegros))
 
 
 ```
 
-Como vemos, a excepción de la variable año, las otras 4 variables claramente no cumplen con la normalidad. En el caso de la variable año, debido al teorema central del límite, podemos considerar que añadiendo más observacioens tenderá a comportarse como una distribución normal.
+Como vemos, a excepción de la variable año, las otras variables claramente no cumplen con la normalidad. En el caso de la variable año, debido al teorema central del límite, podemos considerar que tenderá a comportarse como una distribución normal.
 
-Tambien vamos a hacer un análisis de homocedasticidad entre las variables precioCochesBlancos y precioCoches negros que son las que vamos a comprobar más adelante. Como nos han fallado los test de normalidad vamos a usar el test de Fligner-Killeen. Para usar este test crearemos un nuevo dataframe donde recogeremos los precios de los coches blancos y negros y los evaluaremos.
+También vamos a hacer un análisis de homocedasticidad entre las variables precioCochesBlancos y precioCoches negros que son las que vamos a comprobar más adelante. Como nos han fallado los test de normalidad vamos a usar el test de Fligner-Killeen. Para usar este test crearemos un nuevo dataframe donde recogeremos los precios de los coches blancos y negros y los evaluaremos.
 
 ```{r chunck11}
-df <- data.frame(price=c(precioCochesBlancos,precioCochesNegros), color=c(rep(1,each=719),rep(2,each=554)))
+df <- data.frame(price=c(precioCochesBlancos,precioCochesNegros), 
+                 color=c(rep(1,each=719),rep(2,each=554)))
 fligner.test(price ~ color, data = df)
 ```
 
@@ -301,12 +310,14 @@ En los dos casos anteriores, solo se van a tener en cuenta los vehículos con un
 ```{r chunck13}
 #price y year
 
-plot(cochesMenos20$price, cochesMenos20$year, xlab = "Precio $", ylab = "Año primera matriculación")
+plot(cochesMenos20$price, cochesMenos20$year, xlab = "Precio $", 
+     ylab = "Año primera matriculación")
 abline(lm(cochesMenos20$year~cochesMenos20$price),col="red",lwd=4)
 cor(x=cochesMenos20$price, y=cochesMenos20$year,method="spearman")
 
 #price y mileage
-plot(cochesMenos20$price, cochesMenos20$mileage, xlab = "Precio $", ylab = "Kilometraje en millas")
+plot(cochesMenos20$price, cochesMenos20$mileage, xlab = "Precio $", 
+     ylab = "Kilometraje en millas")
 abline(lm(cochesMenos20$mileage~cochesMenos20$price),col="red",lwd=4)
 cor(x=cochesMenos20$price, y=cochesMenos20$mileage,method="spearman")
 
@@ -316,7 +327,7 @@ Del análisis anterior se extrae que existe una correlación positiva entre las 
 
 En cuanto a la relación entre las variables precio y kilometraje, ésta es negativa ya que un mayor kilometraje del vehículo, influye bajando el precio de venta del mismo.
 
-Mediante la función cor(), que utiliza el coeficiente de correlación de Spearman, se observa que en ambos casos, la relación entre los pares de variables puede considerarse de fortaleza media, siendo mayor para la relación entre el precio y el año de primera matriculación. 
+Mediante la función cor(), que utiliza el coeficiente de correlación de Spearman, se observa que en ambos casos, la relación entre los pares de variables puede considerarse de fortaleza media, siendo mayor para la relación entre el precio y el kilometraje. 
 
 **b). Contraste de hipótesis **
 
@@ -357,13 +368,13 @@ De entre los modelos que obtengamos, escogeremos el mejor utilizando como criter
 
 ```{r chunck15}
 #predecir precio en función del año de matriculación y kilometraje
-modelo1 <- lm(formula = cars$price ~ cars$year + cars$mileage)
+modelo1 <- lm(formula = price ~ year + mileage, data = cars)
 
 #predecir precio en función del año de matriculación, kilometraje y marca
-modelo2 <- lm(formula = cars$price ~ cars$year + cars$mileage + cars$brand)
+modelo2 <- lm(formula = price ~ year + mileage + brand, data = cars)
 
 #predecir precio en función del año de matriculación, kilometraje, marca y color
-modelo3 <- lm(formula = cars$price ~ cars$year + cars$mileage + cars$brand + cars$color)
+modelo3 <- lm(formula = price ~ year + mileage + brand + color, data = cars)
 
 #Tabla con los coeficientes de determinación
 coeficientes <- matrix(c( 1, summary(modelo1)$r.squared,
@@ -375,19 +386,30 @@ print(coeficientes)
 
 ```
 
-Podemos decir, que el tercer modelo es el más conveniente dado que tiene un mayor coeficiente de determinación. Empleando este modelo y haciendo uso de la **función predict()**, podemos realizar predicciones de precios de vehículos a partir del año de matriculación, kilometraje, marca y color. 
+Podemos decir, que el tercer modelo es el más conveniente dado que tiene un mayor coeficiente de determinación. Empleando este modelo y haciendo uso de la **función predict()**, podemos realizar predicciones de precios de vehículos a partir del año de matriculación, kilometraje, marca y color, pero como los coeficientes son muy bajos esta predicción no será correcta. 
+
+Para comprobar lo efectiva que sería la predicción, vamos a calcular el error sobre el conjunto de datos que tenemos:
+
+```{r chunck15.5}
+# Usamos la función predict con el modelo que más se nos ajusta para evaluar todo 
+# nuestro conjunto de datos
+prediccion = predict(modelo3,cars)
+
+# Comprobamos cuantos coches se diferencian en más de 1000$ respecto al resultado estimado
+summary(abs(prediccion-cars$price)>1000)
+
+```
+
+Como vemos, 2264 coches, el 98%, de los coches de nuestra muestra distan más de 1000 dolares de su precio real.
 
 ### 2.5. Representación de los resultados a partir de tablas y gráficas.
-
-
-
-
 
 Para la diagnosis del modelo de regresión lineal múltiple escogido se harán dos gráficos: uno con los valores ajustados frente a los residuos (que nos permitirá ver si la varianza es constante) y el gráfico cuantil-cuantil que compara los residuos del modelo con los valores de una variable que se distribuye normalmente(QQ plot). 
 
 ```{r chunck19}
 #Varianza de los errores/residuos constante
-plot(fitted.values(modelo3),rstandard(modelo3), xlab="Valores ajustados", ylab="Residuos estandarizados")  
+plot(fitted.values(modelo3),rstandard(modelo3), xlab="Valores ajustados", 
+     ylab="Residuos estandarizados")  
 abline(h=0) 
 
 #Distribución normal de los residuos
@@ -408,6 +430,20 @@ El **gráfico cuantil-cuantil (Normal Q-Q)** permite comparar la distribución d
 
 De las gráficas anteriores se puede extraer la presencia de outliers que están perturbando el modelo y valores alejados del comportamiento de la mayoría de los puntos (sobre todo en valores pequeños y altos de x).
 
+```{r chunck21}
+ ggplot(cars,aes(x=year,y=mileage, colour=price))+geom_point()+
+  labs(x="Año", y="Kilometraje", colour="precio")
+```
+
+En la **gráfica de puntos**, vemos como, incluso visualmente se puede apreciar que mientras menos kilómetros tiene el coche más caro es.
+
+```{r chunck22}
+ggplot(df,aes(x=price,y=1:nrow(df),colour=as.factor(color)))+geom_point()+
+  labs(x="Precio",y="Nº Muestra", colour="Color")
+```
+
+En esta segunda **gráfica de puntos** podemos observar como los coches blancos, etiquetados como 1, y los coches negros, etiquetados como 2, están distribuidos en  los mismos rangos de precios, tal como corrobora el estudio.
+
 
 ### 2.6. Conclusiones
 
@@ -416,26 +452,15 @@ a las preguntas inicialmente planteadas.
 
 * ¿Qué influye más en el precio de un vehículo con menos de 20 años de antigüedad: su antigüedad o el kilometraje que tenga? 
 
-Pues parece ser, que la antigüedad del vehículo tiene una repercusión mayor en el precio que el kilometraje de éste.
-En la gráfica a continuación, vemos como, incluso visualmente se puede apreciar que mientras más a la derecha estamos en la gráfica más caro es el coche.
-
-```{r chunck21}
- ggplot(cars,aes(x=year,y=mileage, colour=price))+geom_point()+labs(x="Año", y="Kilometraje", colour="precio")
-```
+Pues parece ser, que el kilometraje del vehículo tiene una repercusión mayor en el precio que la antigüedad de éste.
 
 * ¿Los coches de color blanco son más caros que los de color negro?
 
 En este estudio, y con un 95% de nivel de confianza, el precio de los coches de color blanco es similar al precio de los coches de color negro. 
 
-En la gráfica podemos ver como los coches blancos, etiquetados como 1, y los coches negros, etiquetados como 2, están distribuidos en  los mismos rangos de precios, tal como corrobora el estudio.
-
-```{r chunck22}
-ggplot(df,aes(x=price,y=1:nrow(df),colour=as.factor(color)))+geom_point()+labs(x="Precio",y="Nº Muestra", colour="Color")
-```
-
 * ¿Podría crearse un modelo o fórmula para calcular el precio de venta de los vehículos de segunda mano, de manera objetiva, en función de ciertas características de los vehículos? ¿Cuáles serían las características más relevantes a tener en cuenta en esa fórmula?
 
-Sí, podemos realizar predicciones de precios de vehículos a partir del año de matriculación, kilometraje, marca y color. 
+Teniendo en cuenta que los valores de los coeficientes de la regresión nos han dado muy cercanos a cero, con este tipo de regresión no podemos realizar predicciones de precios de vehículos a partir del año de matriculación, kilometraje, marca y color. 
 
 ### 2.7. Crear el archivo procesado. 
 
